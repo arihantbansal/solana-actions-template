@@ -5,7 +5,10 @@ import {
 	ActionsSpecErrorResponse,
 } from '../types/solana-actions.js';
 import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
-import { prepareDonateTransaction, uint8ArrayToBase64 } from '../utils/index.js';
+import {
+	prepareDonateTransaction,
+	uint8ArrayToBase64,
+} from '../utils/index.js';
 
 const ENDPOINT = process.env.ENDPOINT ?? '';
 const PORT = process.env.PORT || 3000;
@@ -13,7 +16,7 @@ const HOST =
 	process.env.NODE_ENV === 'development'
 		? `http://localhost:${PORT}`
 		: process.env.URL;
-const DEFAULT_REDIRECT_URL = process.env.DEFAULT_URL ?? '';
+const DEFAULT_REDIRECT_URL = process.env.DEFAULT_REDIRECT_URL ?? '';
 const DEFAULT_DONATION_DESTINATION_WALLET =
 	process.env.DEFAULT_DONATION_DESTINATION_WALLET ??
 	'3DPPCjvhTVSh9Uph6fGTTWEkUDVLW7TxKrirrEd3b1WB';
@@ -38,7 +41,7 @@ router.get('/blinks/donate', async (req: Request, res: Response) => {
 	const links: ActionsSpecGetResponse['links'] = {
 		actions: [
 			{
-				href: `${HOST}/transactions/donate?$&amount={${amountQuery}}`,
+				href: `${HOST}/transactions/donate?amount={${amountQuery}}`,
 				label: 'Tip a friend',
 				parameters: [
 					{
@@ -62,7 +65,7 @@ router.get('/blinks/donate', async (req: Request, res: Response) => {
 	return res.json(response);
 });
 
-router.post('/transactions/deposit', async (req: Request, res: Response) => {
+router.post('/transactions/donate', async (req: Request, res: Response) => {
 	const returnErrorResponse = (message: string) => {
 		return res.status(400).json({ message } as ActionsSpecErrorResponse);
 	};

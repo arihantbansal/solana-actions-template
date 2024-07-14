@@ -1,6 +1,6 @@
 import './config.js';
 
-import express, { Express } from 'express';
+import express, { Request, Response, Express, NextFunction } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import api from './routes/index.js';
@@ -17,7 +17,11 @@ app.use(
 );
 app.use('/', api);
 
-const checkConnections = async (_req, res, _next) => {
+const checkConnections = async (
+	_req: Request,
+	res: Response,
+	_next: NextFunction
+) => {
 	res.writeHead(200);
 	res.end('OK');
 };
@@ -38,5 +42,6 @@ app.listen(PORT, () => {
 ].forEach((signal) => {
 	process.on(signal, (e) => {
 		console.log('Process forced shutdown:', signal, e);
+		process.exit(0);
 	});
 });
