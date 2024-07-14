@@ -10,13 +10,13 @@ import {
 	uint8ArrayToBase64,
 } from '../utils/index.js';
 
-const ENDPOINT = process.env.ENDPOINT ?? '';
+const ENDPOINT = process.env.ENDPOINT ?? 'https://api.mainnet-beta.solana.com';
 const PORT = process.env.PORT || 3000;
 const HOST =
 	process.env.NODE_ENV === 'development'
 		? `http://localhost:${PORT}`
 		: process.env.URL;
-const DEFAULT_REDIRECT_URL = process.env.DEFAULT_REDIRECT_URL ?? '';
+const DEFAULT_REDIRECT_URL = process.env.DEFAULT_REDIRECT_URL ?? 'https://solana.com/';
 const DEFAULT_DONATION_DESTINATION_WALLET =
 	process.env.DEFAULT_DONATION_DESTINATION_WALLET ??
 	'3DPPCjvhTVSh9Uph6fGTTWEkUDVLW7TxKrirrEd3b1WB';
