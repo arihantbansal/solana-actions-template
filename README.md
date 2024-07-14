@@ -29,7 +29,7 @@ a URL.
 - npm or yarn
 - A .env file with necessary configurations
 
-## Installation
+## Getting Started
 
 1. **Fork and clone the repository:**
 
@@ -61,6 +61,8 @@ a URL.
     # or
     yarn dev
    ```
+
+And then open Dialect interstitial website: <https://dial.to/?action=solana-action:http://localhost:3000>. It'll use your local web server, so you can develop and test almost in realtime.
 
 ## Routes
 
