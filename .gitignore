@@ -47,3 +47,5 @@ lib/
 # VS Code directories
 .vscode/
 
+package-lock.json
+yarn.lock
