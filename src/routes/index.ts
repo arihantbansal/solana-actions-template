@@ -1,9 +1,8 @@
 import express, { Request, Response } from 'express';
 import {
-	ActionsSpecGetResponse,
-	ActionsSpecPostResponse,
-	ActionsSpecErrorResponse,
-} from '../types/solana-actions.js';
+	ActionGetResponse,
+	ActionPostResponse,
+} from '@solana/actions';
 import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import {
 	prepareDonateTransaction,
@@ -38,7 +37,7 @@ router.get('/blinks/donate', async (req: Request, res: Response) => {
 	const disabled = false;
 	const amountQuery = 'depositAmount';
 
-	const links: ActionsSpecGetResponse['links'] = {
+	const links: ActionGetResponse['links'] = {
 		actions: [
 			{
 				href: `${HOST}/transactions/donate?amount={${amountQuery}}`,
@@ -53,7 +52,7 @@ router.get('/blinks/donate', async (req: Request, res: Response) => {
 		],
 	};
 
-	const response: ActionsSpecGetResponse = {
+	const response: ActionGetResponse = {
 		icon,
 		label,
 		title,
@@ -67,7 +66,7 @@ router.get('/blinks/donate', async (req: Request, res: Response) => {
 
 router.post('/transactions/donate', async (req: Request, res: Response) => {
 	const returnErrorResponse = (message: string) => {
-		return res.status(400).json({ message } as ActionsSpecErrorResponse);
+		return res.status(400).json({ message });
 	};
 
 	let sender: PublicKey | undefined;
@@ -103,7 +102,7 @@ router.post('/transactions/donate', async (req: Request, res: Response) => {
 		parsedAmount * LAMPORTS_PER_SOL
 	);
 
-	const actionResponse: ActionsSpecPostResponse = {
+	const actionResponse: ActionPostResponse = {
 		transaction: uint8ArrayToBase64(txn.serialize()),
 		message: 'Successfully tipped SOL.',
 	};
