@@ -1,0 +1,41 @@
+{
+	"name": "blink-template",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"build": "yarn clean && tsc",
+		"clean": "rm -rf lib",
+		"prettify": "prettier --check './src/**/*.ts'",
+		"prettify:fix": "prettier --write './src/**/*.ts'",
+		"lint": "eslint . --ext ts --quiet",
+		"lint:fix": "eslint . --ext ts --fix",
+		"dev": "node --loader ts-node/esm src/index.ts"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@solana/spl-token": "^0.4.7",
+		"@solana/web3.js": "^1.94.0",
+		"cors": "^2.8.5",
+		"dotenv": "^16.4.5",
+		"express": "^4.19.2",
+		"morgan": "^1.10.0"
+	},
+	"devDependencies": {
+		"@types/cors": "^2.8.17",
+		"@types/express": "^4.17.21",
+		"@types/morgan": "^1.9.9",
+		"@types/node": "^20.14.9",
+		"@typescript-eslint/eslint-plugin": "^4.28.0",
+		"@typescript-eslint/parser": "^4.28.0",
+		"eslint": "^7.29.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-prettier": "^3.4.0",
+		"prettier": "^2.4.1",
+		"ts-node": "^10.9.1",
+		"typescript": "^5.5.3"
+	}
+}
