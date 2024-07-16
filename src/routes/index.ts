@@ -1,6 +1,6 @@
-import express, { Request, Response } from 'express';
 import {
 	ActionGetResponse,
+	ActionPostRequest,
 	ActionPostResponse,
 } from '@solana/actions';
 import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
@@ -8,26 +8,23 @@ import {
 	prepareDonateTransaction,
 	uint8ArrayToBase64,
 } from '../utils/index.js';
+import { Hono } from 'hono';
+import {
+	ENDPOINT,
+	DEFAULT_REDIRECT_URL,
+	HOST,
+	DEFAULT_DONATION_DESTINATION_WALLET,
+} from '../constants/index.js';
 
-const ENDPOINT = process.env.ENDPOINT ?? 'https://api.mainnet-beta.solana.com';
-const PORT = process.env.PORT || 3000;
-const HOST =
-	process.env.NODE_ENV === 'development'
-		? `http://localhost:${PORT}`
-		: process.env.URL;
-const DEFAULT_REDIRECT_URL = process.env.DEFAULT_REDIRECT_URL ?? 'https://solana.com/';
-const DEFAULT_DONATION_DESTINATION_WALLET =
-	process.env.DEFAULT_DONATION_DESTINATION_WALLET ??
-	'3DPPCjvhTVSh9Uph6fGTTWEkUDVLW7TxKrirrEd3b1WB';
 const connection = new Connection(ENDPOINT, 'confirmed');
 
-const router = express.Router();
+const app = new Hono();
 
-router.get('/', (req: Request, res: Response) => {
-	res.redirect(DEFAULT_REDIRECT_URL);
+app.get('/', (c) => {
+	return c.redirect(DEFAULT_REDIRECT_URL);
 });
 
-router.get('/blinks/donate', async (req: Request, res: Response) => {
+app.get('/blinks/donate', async (c) => {
 	const icon =
 		'https://img.fotofolio.xyz/?url=https%3A%2F%2Fraw.githubusercontent.com%2Fsolana-labs%2Ftoken-list%2Fmain%2Fassets%2Fmainnet%2FSo11111111111111111111111111111111111111112%2Flogo.png';
 
@@ -61,18 +58,20 @@ router.get('/blinks/donate', async (req: Request, res: Response) => {
 		links,
 	};
 
-	return res.json(response);
+	return c.json(response);
 });
 
-router.post('/transactions/donate', async (req: Request, res: Response) => {
+app.post('/transactions/donate', async (c) => {
+	const req = await c.req.json<ActionPostRequest>();
+
 	const returnErrorResponse = (message: string) => {
-		return res.status(400).json({ message });
+		return c.json({ message }, 400);
 	};
 
 	let sender: PublicKey | undefined;
 
 	try {
-		sender = new PublicKey(req.body.account);
+		sender = new PublicKey(req.account);
 	} catch (err) {
 		// do nothing
 	}
@@ -82,17 +81,10 @@ router.post('/transactions/donate', async (req: Request, res: Response) => {
 	}
 
 	const recipient = new PublicKey(
-		req.query.dest ?? DEFAULT_DONATION_DESTINATION_WALLET
+		c.req.query('dest') ?? DEFAULT_DONATION_DESTINATION_WALLET
 	);
 
-	const restOfQueryParams = { ...req.query };
-	delete restOfQueryParams.utm_source;
-	delete restOfQueryParams.utm_medium;
-	delete restOfQueryParams.utm_campaign;
-	delete restOfQueryParams.utm_term;
-	delete restOfQueryParams.utm_content;
-
-	const amount = req.query.amount.toString() ?? '0.1';
+	const amount = c.req.query('amount').toString() ?? '0.1';
 	const parsedAmount = parseFloat(amount);
 
 	const txn = await prepareDonateTransaction(
@@ -107,7 +99,7 @@ router.post('/transactions/donate', async (req: Request, res: Response) => {
 		message: 'Successfully tipped SOL.',
 	};
 
-	return res.json(actionResponse);
+	return c.json(actionResponse);
 });
 
-export default router;
+export default app;

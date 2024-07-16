@@ -6,6 +6,11 @@ import {
 	TransactionMessage,
 	Connection,
 } from '@solana/web3.js';
+import { Context } from 'hono';
+
+export function checkConnections(c: Context) {
+	return c.json({ status: 'ok' });
+}
 
 export async function prepareTransaction(
 	connection: Connection,
